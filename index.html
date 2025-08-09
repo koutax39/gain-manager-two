@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>お手伝い管理アプリ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>お手伝い管理アプリ</h1>
+
+  <div id="summary-container">
+    <h2>今月のお小遣い</h2>
+    <ul id="monthly-summary-list"></ul>
+    <p id="total-amount"></p>
+  </div>
+
+  <div id="calendar-container">
+    <h2 id="month-year">カレンダー</h2>
+    <div id="calendar"></div>
+    <div class="cal-nav">
+      <button id="prev-month">← 前の月</button>
+      <button id="next-month">次の月 →</button>
+    </div>
+  </div>
+
+  <div id="history-section" style="display:none;">
+    <h3 id="history-title"></h3>
+    <ul id="history-list"></ul>
+  </div>
+
+  <button id="toggle-user-settings">ユーザー編集</button>
+  <div id="user-settings">
+    <ul id="user-list"></ul>
+    <input id="new-user-name" type="text" placeholder="新しいユーザー名" />
+    <button id="add-user-button">追加</button>
+  </div>
+
+  <!-- 入力フォーム -->
+  <div id="input-form" style="display:none;">
+    <p id="selected-date">選択した日付の記録</p>
+
+    <label>ユーザー：</label>
+    <select id="user-select"></select>
+
+    <label>お手伝い：</label>
+    <select id="task-select">
+      <option value="トイレ掃除" data-amount="100">トイレ掃除（100円）</option>
+      <option value="食器洗い" data-amount="100">食器洗い（100円）</option>
+      <option value="ゴミ集め" data-amount="10">ゴミ集め（10円）</option>
+      <option value="乾燥機に入れる" data-amount="100">乾燥機に入れる（100円）</option>
+      <option value="洗濯物たたむ" data-amount="50">洗濯物たたむ（50円）</option>
+      <option value="掃除機" data-amount="50">掃除機（50円）</option>
+      <option value="靴ならべ" data-amount="30">靴ならべ（30円）</option>
+      <option value="テーブル拭き" data-amount="30">テーブル拭き（30円）</option>
+      <option value="本を読む" data-amount="500">本を読む（500円）</option>
+      <option value="テスト100点小学生" data-amount="500">テスト100点小学生（500円）</option>
+      <option value="平均点合格中学生" data-amount="1000">平均点合格中学生（1000円）</option>
+      <option value="テスト勉強1ページ" data-amount="50">テスト勉強1ページ（50円）</option>
+      <option value="携帯の使いすぎ" data-amount="-100">携帯の使いすぎ（-100円）</option>
+    </select>
+
+    <div id="count-controls">
+      回数：
+      <button id="decrease">−</button>
+      <span id="count-label">1</span>
+      <button id="increase">＋</button>
+    </div>
+
+    <button id="add-record">追加</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
