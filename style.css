@@ -239,3 +239,64 @@ input[type="text"], select {
   flex: 1;
   min-width: 120px;
 }
+/* ツールバー */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 10px 20px;
+}
+
+/* タスク編集 */
+#task-settings {
+  margin: 30px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px dashed #ccc;
+  border-radius: 10px;
+}
+
+#task-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 12px;
+}
+
+.task-list-item {
+  display: grid;
+  grid-template-columns: 1fr 120px auto auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.task-input-name, .task-input-amount {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.task-editor-row {
+  display: grid;
+  grid-template-columns: 1fr 160px auto;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.note {
+  color: #555;
+  font-size: 0.9em;
+  margin-top: 6px;
+}
+
+/* 履歴のボタン揃え */
+#history-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+}
