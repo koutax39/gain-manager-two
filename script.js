@@ -25,15 +25,122 @@ function renderUsers(){
     list.innerHTML = "";
     users.forEach((u, i) => {
       const li = document.createElement("li");
-      const input = document.createElement("input"); input.className="user-input"; input.value = u;
-      const save = document.createElement("button"); save.textContent = "保存";
-      const del = document.createElement("button"); del.textContent = "削除";
-      save.onclick = () => { users[i] = input.value.trim(); users = users.filter(x=>x); saveUsers(); renderUsers(); updateSummary(); };
-      del.onclick = () => { if(confirm(`${u} を削除しますか？`)){ users.splice(i,1); saveUsers(); renderUsers(); updateSummary(); } };
+      li.className = "user-list-item";
+
+      const input = document.createElement("input");
+      input.className="user-input";
+      input.value = u;
+
+      const save = document.createElement("button");
+      save.textContent = "保存";
+      save.className = "user-save-btn";
+
+      const del = document.createElement("button");
+      del.textContent = "削除";
+      del.className = "user-delete-btn";
+
+      save.onclick = () => {
+        users[i] = input.value.trim();
+        users = users.filter(x=>x);
+        saveUsers(); renderUsers(); updateSummary();
+      };
+      del.onclick = () => {
+        if(confirm(`${u} を削除しますか？`)){
+          users.splice(i,1);
+          saveUsers(); renderUsers(); updateSummary();
+        }
+      };
       li.append(input, save, del);
       list.appendChild(li);
     });
   }
+}
+
+// ===== タスク管理 =====
+const TASKS_KEY = "task-list";
+const DEFAULT_TASKS = [
+  { name: "トイレ掃除", amount: 100 },
+  { name: "食器洗い", amount: 100 },
+  { name: "ゴミ集め", amount: 10 },
+  { name: "乾燥機に入れる", amount: 100 },
+  { name: "洗濯物たたむ", amount: 50 },
+  { name: "掃除機", amount: 50 },
+  { name: "靴ならべ", amount: 30 },
+  { name: "テーブル拭き", amount: 30 },
+  { name: "本を読む", amount: 500 },
+  { name: "テスト100点小学生", amount: 500 },
+  { name: "平均点合格中学生", amount: 1000 },
+  { name: "テスト勉強1ページ", amount: 50 },
+  { name: "携帯の使いすぎ", amount: -100 },
+];
+let tasks = JSON.parse(localStorage.getItem(TASKS_KEY) || "null");
+if (!Array.isArray(tasks) || tasks.length === 0) {
+  tasks = DEFAULT_TASKS.slice();
+  localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+}
+function saveTasks(){
+  localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+}
+function renderTaskSelect(){
+  const sel = document.getElementById("task-select");
+  if (!sel) return;
+  sel.innerHTML = "";
+  tasks.forEach(t=>{
+    const opt = document.createElement("option");
+    opt.value = t.name;
+    opt.dataset.amount = String(t.amount);
+    opt.textContent = `${t.name}（${t.amount}円）`;
+    sel.appendChild(opt);
+  });
+}
+function renderTaskEditor(){
+  const list = document.getElementById("task-list");
+  if (!list) return;
+  list.innerHTML = "";
+  tasks.forEach((t, idx)=>{
+    const li = document.createElement("li");
+    li.className = "task-list-item";
+
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.value = t.name;
+    nameInput.className = "task-input-name";
+
+    const amountInput = document.createElement("input");
+    amountInput.type = "number";
+    amountInput.value = String(t.amount);
+    amountInput.className = "task-input-amount";
+
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = "更新";
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "削除";
+
+    saveBtn.onclick = () => {
+      const newName = nameInput.value.trim();
+      const newAmount = Number(amountInput.value);
+      if (!newName || Number.isNaN(newAmount)) {
+        alert("タスク名と金額を正しく入力してください");
+        return;
+      }
+      tasks[idx] = { name: newName, amount: newAmount };
+      saveTasks();
+      renderTaskEditor();
+      renderTaskSelect();
+    };
+    delBtn.onclick = () => {
+      if (confirm(`「${t.name}」を削除しますか？`)){
+        tasks.splice(idx,1);
+        saveTasks();
+        renderTaskEditor();
+        renderTaskSelect();
+      }
+    };
+
+    li.append(nameInput, amountInput, saveBtn, delBtn);
+    list.appendChild(li);
+  });
 }
 
 // ===== カレンダー =====
@@ -80,6 +187,9 @@ function renderCalendar(date){
 
     cal.appendChild(cell);
   }
+
+  // 月のサマリーを更新
+  updateSummary();
 }
 
 // ===== 記録の追加 =====
@@ -112,7 +222,7 @@ document.getElementById("add-record").onclick = () => {
   updateSummary();
 };
 
-// ===== 履歴表示 =====
+// ===== 履歴表示（削除対応） =====
 function renderHistory(y,m,d){
   const key = dateKey(y,m,d);
   const recs = JSON.parse(localStorage.getItem(key) || "[]");
@@ -122,15 +232,34 @@ function renderHistory(y,m,d){
   list.innerHTML = "";
   if (recs.length === 0){ section.style.display="none"; return; }
   title.textContent = `${y}/${m}/${d} の履歴`;
+
   recs.forEach((r,i)=>{
     const li = document.createElement("li");
-    li.textContent = `#${i+1}：${r.user} さんが ${r.task} を ${r.count}回（${r.total}円）`;
+    const text = `#${i+1}：${r.user} さんが ${r.task} を ${r.count}回（${r.total}円）`;
+    const span = document.createElement("span");
+    span.textContent = text;
+
+    const del = document.createElement("button");
+    del.textContent = "削除";
+    del.onclick = () => {
+      if (confirm(`${text} を削除しますか？`)){
+        const arr = JSON.parse(localStorage.getItem(key) || "[]");
+        arr.splice(i,1);
+        localStorage.setItem(key, JSON.stringify(arr));
+        renderHistory(y,m,d);
+        updateSummary();
+        // カレンダーの色も更新
+        renderCalendar(currentDate);
+      }
+    };
+
+    li.append(span, del);
     list.appendChild(li);
   });
   section.style.display="block";
 }
 
-// ===== サマリー =====
+// ===== サマリー（月表示中の月で集計） =====
 function updateSummary(){
   const y = currentDate.getFullYear();
   const m = currentDate.getMonth()+1;
@@ -175,6 +304,13 @@ document.getElementById("toggle-user-settings").onclick = () => {
   const el = document.getElementById("user-settings");
   el.style.display = (el.style.display === "block") ? "none" : "block";
 };
+document.getElementById("toggle-task-settings").onclick = () => {
+  const el = document.getElementById("task-settings");
+  el.style.display = (el.style.display === "block") ? "none" : "block";
+  if (el.style.display === "block"){
+    renderTaskEditor();
+  }
+};
 document.getElementById("add-user-button").onclick = () => {
   const name = document.getElementById("new-user-name").value.trim();
   if (!name) return;
@@ -183,8 +319,28 @@ document.getElementById("add-user-button").onclick = () => {
   saveUsers(); renderUsers(); updateSummary();
   document.getElementById("new-user-name").value = "";
 };
+document.getElementById("add-task-button").onclick = () => {
+  const name = document.getElementById("new-task-name").value.trim();
+  const amount = Number(document.getElementById("new-task-amount").value);
+  if (!name || Number.isNaN(amount)){
+    alert("タスク名と金額を正しく入力してください");
+    return;
+  }
+  if (tasks.some(t=>t.name === name)){
+    if (!confirm("同名のタスクがあります。上書きしますか？")) return;
+    tasks = tasks.map(t => t.name === name ? { name, amount } : t);
+  } else {
+    tasks.push({ name, amount });
+  }
+  saveTasks();
+  renderTaskEditor();
+  renderTaskSelect();
+  document.getElementById("new-task-name").value = "";
+  document.getElementById("new-task-amount").value = "";
+};
 
 // 初期化
 renderUsers();
+renderTaskSelect();
 renderCalendar(currentDate);
 updateSummary();
