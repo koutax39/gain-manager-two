@@ -29,7 +29,12 @@
     <ul id="history-list"></ul>
   </div>
 
-  <button id="toggle-user-settings">ユーザー編集</button>
+  <div class="toolbar">
+    <button id="toggle-user-settings">ユーザー編集</button>
+    <button id="toggle-task-settings">タスク編集</button>
+  </div>
+
+  <!-- ユーザー編集 -->
   <div id="user-settings">
     <ul id="user-list"></ul>
     <input id="new-user-name" type="text" placeholder="新しいユーザー名" />
@@ -44,22 +49,7 @@
     <select id="user-select"></select>
 
     <label>お手伝い：</label>
-    <select id="task-select">
-      <option value="トイレ掃除" data-amount="100">トイレ掃除（100円）</option>
-      <option value="食器洗い" data-amount="200">食器洗い（200円）</option>
-      <option value="風呂洗い" data-amount="100">風呂洗い（100円）</option>
-      <option value="ゴミ集め" data-amount="10">ゴミ集め（10円）</option>
-      <option value="乾燥機に入れる" data-amount="50">乾燥機に入れる（50円）</option>
-      <option value="洗濯物たたむ" data-amount="150">洗濯物たたむ（150円）</option>
-      <option value="掃除機" data-amount="150">掃除機（150円）</option>
-      <option value="靴ならべ、ほうき掃除" data-amount="100">靴ならべ、ほうき掃除（100円）</option>
-      <option value="テーブル拭き" data-amount="30">テーブル拭き（30円）</option>
-      <option value="本を読む" data-amount="500">本を読む（500円）</option>
-      <option value="テスト100点小学生" data-amount="200">テスト100点小学生（200円）</option>
-      <option value="平均点合格中学生" data-amount="1000">平均点合格中学生（1000円）</option>
-      <option value="テスト勉強1ページ" data-amount="50">テスト勉強1ページ（50円）</option>
-      <option value="携帯の使いすぎ" data-amount="-100">携帯の使いすぎ（-100円）</option>
-    </select>
+    <select id="task-select"></select>
 
     <div id="count-controls">
       回数：
@@ -69,6 +59,18 @@
     </div>
 
     <button id="add-record">追加</button>
+  </div>
+
+  <!-- タスク編集 -->
+  <div id="task-settings" style="display:none;">
+    <h3>タスク編集</h3>
+    <ul id="task-list"></ul>
+    <div class="task-editor-row">
+      <input type="text" id="new-task-name" placeholder="タスク名（例：テーブル拭き）" />
+      <input type="number" id="new-task-amount" placeholder="金額（例：30）" />
+      <button id="add-task-button">タスクを追加</button>
+    </div>
+    <p class="note">※ マイナス値も可（例：携帯の使いすぎ -100）</p>
   </div>
 
   <script src="script.js"></script>
